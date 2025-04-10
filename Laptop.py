@@ -1,64 +1,80 @@
-phone_directory = {}
-todo_list = []
+contacts = {} 
 
 def display_menu():
-    print("Show MENU")
-    print("1. Add Name")
-    print("2.Add Contact")
-    print("3. Add Email")
-    print("4. Add to-do")
-    print("5. View to-dos")
+    print("Phone Directory Menu")
+    print("1. Add Contact")
+    print("2. View Contact")
+    print("3. Update Contact")
+    print("4. Delete Contact")
+    print("5. List All Contacts")
     print("6. Exit")
 
 while True:
     display_menu()
-    try:
-        choice = int(input("Enter your choice (1-6): "))
+    choice = input("Enter choice (1-6): ")
 
-        if choice == 1:
-            name = input("Enter name: ")
-            phone = input("Enter phone number: ")
-            if not phone.isdigit():
-                raise ValueError("Phone number must contain digits only.")
-            phone_directory[name] = phone
-            print(f"Contact for {name} added.")
+    if choice == "1":
+        name = input("Enter name: ")
+        phone = input("Enter phone number: ")
+        email = input("Enter email (optional): ")
 
-        elif choice == 2:
-            name = input("Enter name to view: ")
-            try:
-                print(f"{name}'s number: {phone_directory[name]}")
-            except KeyError:
-                print("Contact not found.")
+        if not phone.isdigit():
+            print("Error: Phone number must contain digits only.")
+            continue
 
-        elif choice == 3:
-            name = input("Enter name to delete: ")
-            try:
-                del phone_directory[name]
-                print(f"Deleted contact: {name}")
-            except KeyError:
-                print("Contact not found.")
+        contacts[name] = {"phone": phone, "email": email}
+        print(f"Contact '{name}' added.")
 
-        elif choice == 4:
-            task = input("Enter a to-do item: ")
-            todo_list.append(task)
-            print("To-do added.")
-
-        elif choice == 5:
-            print("\n--- TO-DO LIST ---")
-            if not todo_list:
-                print("No tasks.")
-            else:
-                for i, task in enumerate(todo_list, start=1):
-                    print(f"{i}. {task}")
-
-        elif choice == 6:
-            print("Goodbye!")
-            break
-
+    elif choice == "2":
+        name = input("Enter name to view: ")
+        if name in contacts:
+            phone = contacts[name]["phone"]
+            email = contacts[name]["email"]
+            print(f"{name} - Phone: {phone}, Email: {email if email else 'N/A'}")
         else:
-            print("Invalid choice. Please select from 1 to 6.")
+            print("Contact not found.")
 
-    except ValueError as ve:
-        print(f"Error: {ve}")
-    except Exception as e:
-        print(f"Unexpected error: {e}")
+    elif choice == "3":  
+        name = input("Enter name to update: ")
+        if name in contacts:
+            new_phone = input("Enter new phone number: ")
+            new_email = input("Enter new email (optional): ")
+
+            if new_phone and not new_phone.isdigit():
+                print("Error: Phone number must contain digits only.")
+                continue
+
+            if new_phone:
+                contacts[name]["phone"] = new_phone
+            if new_email or new_email == "":
+                contacts[name]["email"] = new_email
+
+            print(f"Contact '{name}' updated.")
+        else:
+            print("Contact not found.")
+
+    elif choice == "4":  
+        name = input("Enter name to delete: ").strip()
+        if name in contacts:
+            del contacts[name]
+            print(f"Contact '{name}' deleted.")
+        else:
+            print("Contact not found.")
+
+    elif choice == "5": 
+        if not contacts:
+            print("No contacts available.")
+        else:
+            for name, info in contacts.items():
+                phone = info["phone"]
+                email = info["email"]
+                print(f"{name} - Phone: {phone}, Email: {email if email else 'N/A'}")
+
+    elif choice == "6":  
+        print("Goodbye!")
+        break
+
+    else:
+        print("Invalid choice. Please enter a number between 1 and 6.") 
+   
+    
